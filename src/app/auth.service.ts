@@ -4,6 +4,7 @@ import { Balance, User } from './models/user';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from './token.service';
 import { LoginRes } from './models/loginRes';
+import { environment } from '../../env.prod';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,6 @@ export class AuthService {
   headers = new HttpHeaders({
     'Content-Type': 'application/json',
   });
-  private baseUrl = 'http://localhost:3000';
   private currentUserSubject = new BehaviorSubject<User|null>(null)
   public currentUser = this.currentUserSubject.asObservable().pipe(distinctUntilChanged())
   public isAuthenticated = this.currentUser.pipe(map( user => !!user))
@@ -35,7 +35,7 @@ export class AuthService {
       brokerId: "2"
     };
     return this.http
-      .post<LoginRes>(this.baseUrl+'/api/login', body, { headers: this.headers , withCredentials:true })
+      .post<LoginRes>(environment.apiUrl+'/api/login', body, { headers: this.headers , withCredentials:true })
       .pipe(
         switchMap(user => {
           user.tradingAccounts = user.tradingAccounts.filter(account =>
@@ -44,7 +44,7 @@ export class AuthService {
             // account.tradingAccountId !== "909633"
           );
           const balanceRequests = user.tradingAccounts.map(account =>
-            this.http.get<Balance>(`${this.baseUrl}/api/balance?tradingApiToken=${account.tradingApiToken}&system_uuid=${account.offer.system.uuid}`, {headers:this.headers, withCredentials:true})
+            this.http.get<Balance>(`${environment.apiUrl}/api/balance?tradingApiToken=${account.tradingApiToken}&system_uuid=${account.offer.system.uuid}`, {headers:this.headers, withCredentials:true})
             .pipe(
               map(balance => ({ ...account, balance }))
             )
@@ -70,7 +70,7 @@ export class AuthService {
       tradingApiToken: tradingAccount.tradingApiToken,
       system_uuid:  tradingAccount.offer.system.uuid
     }
-    return this.http.post<User>(this.baseUrl+'/api/user', body, { headers, withCredentials:true }).pipe(
+    return this.http.post<User>(environment.apiUrl+'/api/user', body, { headers, withCredentials:true }).pipe(
       tap({
         next: balance => {
           this.setAuth(user)

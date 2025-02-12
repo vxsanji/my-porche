@@ -4,13 +4,13 @@ import { BehaviorSubject, forkJoin, lastValueFrom, map, Observable } from 'rxjs'
 import { Position } from '../models/position';
 import { TokenService } from '../token.service';
 import { TradingAccount, User } from '../models/user';
+import { environment } from '../../../env.prod';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class HomeService {
-  private baseUrl = 'http://localhost:3000';
   private positionSubject = new BehaviorSubject<Position[]>([])
   public positions = this.positionSubject.asObservable()
   private tradingAccounts: TradingAccount[] = []
@@ -40,7 +40,7 @@ export class HomeService {
     });
     return this.http
       .post<any>(
-        this.baseUrl+`/api/trade/close-position?tradingApiToken=${position.tradingApiToken}&system_uuid=${position.system_uuid}`,
+        environment.apiUrl+`/trade/close-position?tradingApiToken=${position.tradingApiToken}&system_uuid=${position.system_uuid}`,
         body,
         { headers, withCredentials:true }
       )
@@ -58,7 +58,7 @@ export class HomeService {
       };
 
       return this.http
-        .post<Position[]>(this.baseUrl + '/api/trade/opened-position', body, { headers, withCredentials: true })
+        .post<Position[]>(environment.apiUrl+ '/trade/opened-position', body, { headers, withCredentials: true })
         .pipe(
           map(positions => {
             return positions.map(position => ({
@@ -92,7 +92,7 @@ export class HomeService {
         isMobile: false
       }
       return this.http
-       .post<any>(`${this.baseUrl}/api/trade/edit?tradingApiToken=${position.tradingApiToken}&system_uuid=${position.system_uuid}`, body, { headers, withCredentials:true })
+       .post<any>(`${environment.apiUrl}/trade/edit?tradingApiToken=${position.tradingApiToken}&system_uuid=${position.system_uuid}`, body, { headers, withCredentials:true })
     })
     try {
       await Promise.all(editRequest.map( req => lastValueFrom(req)))

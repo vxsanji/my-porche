@@ -4,12 +4,12 @@ import { Market } from './models/market';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { TradingAccount } from './models/user';
+import { environment } from '../../env.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MarketService {
-    private baseUrl = 'http://localhost:3000/api';
     private acc!: TradingAccount;
     constructor(
         private http: HttpClient,
@@ -25,7 +25,7 @@ export class MarketService {
               'Content-Type': 'application/json',
         });
         return this.http
-        .get<Market[]>(`${this.baseUrl}/market?tradingApiToken=${this.acc.tradingApiToken}&system_uuid=${this.acc.offer.system.uuid}&symbol=${symbol}`,  { headers, withCredentials:true })
+        .get<Market[]>(`${environment.apiUrl}/market?tradingApiToken=${this.acc.tradingApiToken}&system_uuid=${this.acc.offer.system.uuid}&symbol=${symbol}`,  { headers, withCredentials:true })
     }
 
 

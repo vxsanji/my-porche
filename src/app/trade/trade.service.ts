@@ -6,13 +6,13 @@ import { Position } from '../models/position';
 import { TokenService } from '../token.service';
 import { TradingAccount, User } from '../models/user';
 import { HomeService } from '../home/home.service';
+import { environment } from '../../../env.prod';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TradeService {
-  private baseUrl = 'http://localhost:3000';
-  private apiUrl: string = 'http://localhost:3000/api/trade/open';
+  private apiUrl: string = `${environment.apiUrl}'/trade/open`;
   private tradingAccounts: TradingAccount[] = []
   constructor(
     private http: HttpClient,
@@ -75,6 +75,6 @@ export class TradeService {
       positions:x
     }
     return this.http
-      .post<any>(this.baseUrl+'/api/trade/close-position', body, { headers, withCredentials:true })
+      .post<any>(environment.apiUrl+'/trade/close-position', body, { headers, withCredentials:true })
   }
 }
