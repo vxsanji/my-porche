@@ -1,0 +1,8 @@
+{
+    "/mtr-backend/login": {
+      "target": "https://mtr.e8markets.com",
+      "secure": true,
+      "changeOrigin": true
+    }
+  }
+  

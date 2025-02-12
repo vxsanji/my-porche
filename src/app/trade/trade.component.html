@@ -1,0 +1,34 @@
+<div class="min-h-screen bg-gray-900 px-3 py-5">
+  <form class="mb-5" [formGroup]="trade">
+    <div class="flex gap-3 flex-col flex-1">
+      <div class="flex">
+        <select formControlName="instrument" class="flex-1 bg-gray-800 py-3 text-center" name="pair" id="pair">
+          <option value="EURUSD.c">EURUSD</option>
+          <option value="GBPUSD.c">GBPUSD</option>
+          <option value="NSDQ.c">US100</option>
+          <option value="SP.c">US500</option>
+        </select>
+      </div>
+      <div class="">
+        <input formControlName="volume" class="w-full h-10 bg-gray-800 text-center" type="number" name="lot" id="lot" placeholder="1.00" step="0.01">
+      </div>
+      <div>
+        <label for="slPrice">Stop Loss</label>
+        <input formControlName="slPrice" class="w-full h-10 bg-gray-800 text-center" type="number" name="slPrice" id="slPrice" step="0.00001">
+      </div>
+      <div>
+        <label for="tpPrice">Take Profit</label>
+        <input formControlName="tpPrice" class="w-full h-10 bg-gray-800 text-center"  type="number" name="tpPrice" id="tpPrice" step="0.00001">
+      </div>
+      <div class="flex gap-2 justify-between">
+        <button (click)="sell()" class="bg-purple-600 flex-1 py-3">SELL</button>
+        <button (click)="buy()" class="bg-purple-600 flex-1 py-3">BUY</button>
+      </div>
+      <div class="flex">
+        <button (click)="flatten()" class="bg-black flex-1 py-3">FLATTEN</button>
+      </div>
+    </div>
+  </form>
+  <div class="bg-black w-full font-mono font-thin text-xs h-full">
+  </div>
+</div>
