@@ -1,23 +1,18 @@
 export interface User{
-    email: string;
     token: string;
-    tradingAccounts: TradingAccount[];
+    username: string;
 }
 
 export interface TradingAccount{
-    tradingAccountId: string;
-    tradingApiToken: string;
-    tradingAccountToken: {
-        token: string,
-        expiration: string
-    }
-    balance: Balance;
-    offer: {
-        name: string;
-        system: {
-            uuid: string
+    id:string;
+    name:string;
+    tradingAccounts: [
+        {
+            tradingAccountId: string,
+            name: string,
+            isActive: boolean
         }
-    }
+    ]
 }
 
 export interface Balance {
@@ -30,5 +25,7 @@ export interface Balance {
     margin: string,
     profit: string,
     netProfit: string,
-    currencyPrecision: number
+    currencyPrecision: number,
+    title: string,
+    volume: number
 }

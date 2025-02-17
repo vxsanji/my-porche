@@ -9,6 +9,9 @@
           <option value="SP.c">US500</option>
         </select>
       </div>
+      <div>
+        <p>Market Price {{marketPrice}}</p>
+      </div>
       <div class="">
         <input formControlName="volume" class="w-full h-10 bg-gray-800 text-center" type="number" name="lot" id="lot" placeholder="1.00" step="0.01">
       </div>
@@ -21,8 +24,8 @@
         <input formControlName="tpPrice" class="w-full h-10 bg-gray-800 text-center"  type="number" name="tpPrice" id="tpPrice" step="0.00001">
       </div>
       <div class="flex gap-2 justify-between">
-        <button (click)="sell()" class="bg-purple-600 flex-1 py-3">SELL</button>
-        <button (click)="buy()" class="bg-purple-600 flex-1 py-3">BUY</button>
+        <button (click)="sell()" class="bg-teal-600 flex-1 py-3">SELL</button>
+        <button (click)="buy()" class="bg-teal-600 flex-1 py-3">BUY</button>
       </div>
       <div class="flex">
         <button (click)="flatten()" class="bg-black flex-1 py-3">FLATTEN</button>

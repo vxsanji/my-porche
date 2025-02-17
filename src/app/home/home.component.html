@@ -15,7 +15,7 @@
                         <button type="submit" class="bg-gray-900 px-3 py-1">Update</button>
                     </form>
                     <div>
-                        <button (click)="refresh()">Refresh</button>
+                        <!-- <button (click)="refresh()">Refresh</button> -->
                     </div>
                   </div>
               </div>
@@ -52,7 +52,7 @@
                       @for (p of positions; track $index) {
                           <tr>
                             <th scope="row" class="px-6 py-4 font-medium {{p.side == 'BUY' ? 'text-green-600' : 'text-red-600'}} whitespace-nowrap">
-                                {{p.id}} <br>
+                                {{p.id}} {{p.tradingAccountId}} <br>
                                 <span class="text-white font-light">
                                     {{p.openTime}}
                                 </span>
@@ -68,11 +68,11 @@
                             </td>
                             <td class="px-6 py-4">
                                 {{p.stopLoss}} <br>
-                                {{stopLossUSD(p.openPrice, p.stopLoss, p.volume)}}
+                                <!-- {{stopLossUSD(p.openPrice, p.stopLoss, p.volume)}} -->
                             </td>
                             <td class="px-6 py-4">
                                 {{p.takeProfit}} <br>
-                                {{takeProfitUSD(p.openPrice, p.takeProfit, p.volume)}}
+                                <!-- {{takeProfitUSD(p.openPrice, p.takeProfit, p.volume)}} -->
                             </td>
                             <td class="px-6 py-4">
                                 {{p.netProfit}}
@@ -91,10 +91,10 @@
             <div>
               <div class="flex justify-between items-center p-2">
                   <div>
-                      <h2 class="px-2">Accounts</h2>
+                      <h3 class="px-2">Accounts</h3>
                   </div>
                   <div>
-                      <button (click)="refresh_balance()">Refresh</button>
+                      <a class="text-teal-600" href="/accounts">Account details here!</a>
                   </div>
               </div>
               <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
@@ -111,6 +111,9 @@
                                 Equity
                             </th>
                             <th scope="col" class="px-6 py-3">
+                                Vol x
+                            </th>
+                            <th scope="col" class="px-6 py-3">
                                 Net Profit
                             </th>
                             <th scope="col" class="px-6 py-3">
@@ -119,25 +122,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                      @for (p of accounts; track $index) {
-                          <tr>
-                            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {{p.tradingAccountId}} - {{p.offer.name}}
-                            </th>
-                            <td class="px-6 py-4">
-                                {{p.balance.balance}}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{p.balance.equity}}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{p.balance.netProfit}}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{p.balance.profit}}
-                            </td>
-                        </tr>
-                      }
+                        @for (acc of accounts; track $index) {
+                            @for (p of acc.tradingAccounts; track $index) {
+                                <tr account [acc]="acc" [p]="p"></tr>
+                            }
+                        }
                     </tbody>
                 </table>
               </div>

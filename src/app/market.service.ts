@@ -13,20 +13,16 @@ export class MarketService {
     private acc!: TradingAccount;
     constructor(
         private http: HttpClient,
-        private userService: AuthService
     ) {
-        this.userService.currentUser.subscribe( user => {
-            this.acc = user!.tradingAccounts[0]
-        })
     }
 
-    getMarket(symbol:string): Observable<Market[]> {
-        const headers = new HttpHeaders({
-              'Content-Type': 'application/json',
-        });
-        return this.http
-        .get<Market[]>(`${environment.apiUrl}/market?tradingApiToken=${this.acc.tradingApiToken}&system_uuid=${this.acc.offer.system.uuid}&symbol=${symbol}`,  { headers, withCredentials:true })
-    }
+    // getMarket(symbol:string): Observable<Market[]> {
+    //     const headers = new HttpHeaders({
+    //           'Content-Type': 'application/json',
+    //     });
+    //     return this.http
+    //     .get<Market[]>(`${environment.apiUrl}/market?tradingApiToken=${this.acc.tradingApiToken}&system_uuid=${this.acc.offer.system.uuid}&symbol=${symbol}`,  { headers, withCredentials:true })
+    // }
 
 
 }

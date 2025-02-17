@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, distinctUntilChanged, forkJoin, map, NEVER, Observable, of, shareReplay, switchMap, tap } from 'rxjs';
-import { Balance, User } from './models/user';
+import { BehaviorSubject, catchError, distinctUntilChanged, map, NEVER, Observable, of, shareReplay, tap } from 'rxjs';
+import { User } from './models/user';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from './token.service';
-import { LoginRes } from './models/loginRes';
 import { environment } from '../../env.prod';
+import { userLoginRes } from './models/userLogin';
 
 @Injectable({
   providedIn: 'root'
@@ -16,63 +16,45 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User|null>(null)
   public currentUser = this.currentUserSubject.asObservable().pipe(distinctUntilChanged())
   public isAuthenticated = this.currentUser.pipe(map( user => !!user))
+  private token: string;
   constructor(
     private http: HttpClient,
-    private token: TokenService
-  ) { }
+    private tokenService: TokenService
+  ) {
+    this.token = this.tokenService.getToken()
+  }
   setAuth(user: User): void {
     this.currentUserSubject.next(user)
-    this.token.saveUserToStorage(JSON.stringify(user))
+    this.tokenService.saveUserToStorage(JSON.stringify(user))
   }
   purgeAuth(): void {
-    this.token.destroyUserToStorage();
+    this.tokenService.destroyUserToStorage();
     this.currentUserSubject.next(null);
   }
-  login(account: {email:string, password:string}): Observable<any> {
+  login(account: {username:string, password:string}): Observable<any> {
     const body = {
-      email: account.email,
+      username: account.username,
       password: account.password,
-      brokerId: "2"
     };
     return this.http
-      .post<LoginRes>(environment.apiUrl+'/login', body, { headers: this.headers , withCredentials:true })
+      .post<userLoginRes>(environment.apiUrl+'/auth/login', body, { headers: this.headers })
       .pipe(
-        switchMap(user => {
-          user.tradingAccounts = user.tradingAccounts.filter(account =>
-            !account.offer.name.includes("Trial") &&
-            account.tradingAccountId !== "859274"
-            // account.tradingAccountId !== "909633"
-          );
-          const balanceRequests = user.tradingAccounts.map(account =>
-            this.http.get<Balance>(`${environment.apiUrl}/balance?tradingApiToken=${account.tradingApiToken}&system_uuid=${account.offer.system.uuid}`, {headers:this.headers, withCredentials:true})
-            .pipe(
-              map(balance => ({ ...account, balance }))
-            )
-          );
-    
-          return forkJoin(balanceRequests).pipe(
-            map(updatedAccounts => {
-              user.tradingAccounts = updatedAccounts;
-              return user;
-            })
-          );
-        }),
         tap(user => this.setAuth(user as User))
       )
   }
+  loginAllAccounts(): void{
+    this.http.get(environment.apiUrl+'/login', {headers:{'Authorization': this.token}})
+    .subscribe({
+      next: accounts => {
+        console.log(accounts)
+      },
+      error: console.error,
+    })
+  }
   getCurrentUser(): Observable<User> {
-    const user = JSON.parse(this.token.getUserFromStorage()) as User;
-    const tradingAccount = user.tradingAccounts[0]
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
-    let body = {
-      tradingApiToken: tradingAccount.tradingApiToken,
-      system_uuid:  tradingAccount.offer.system.uuid
-    }
-    return this.http.post<User>(environment.apiUrl+'/user', body, { headers, withCredentials:true }).pipe(
+    return this.http.get<User>(environment.apiUrl+'/auth/refresh-token', {headers:{'Authorization': this.token}}).pipe(
       tap({
-        next: balance => {
+        next: user => {
           this.setAuth(user)
         },
         error: _ => {

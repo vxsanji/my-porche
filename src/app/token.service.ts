@@ -6,14 +6,19 @@ import { Injectable } from '@angular/core';
 export class TokenService {
 
   getUserFromStorage(): string {
-    return window.localStorage["e8user"];
+    return window.localStorage["porche"];
+  }
+
+  getToken(): string {
+    let user = JSON.parse(this.getUserFromStorage() || '{}')
+    return 'Bearer '+user.token
   }
 
   saveUserToStorage(user: string): void {
-    window.localStorage["e8user"] = user;
+    window.localStorage["porche"] = user;
   }
 
   destroyUserToStorage(): void {
-    window.localStorage.removeItem("e8user");
+    window.localStorage.removeItem("porche");
   }
 }

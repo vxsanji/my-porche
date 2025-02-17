@@ -1,7 +1,7 @@
 export interface Position{
-    tradingApiToken: string;
-    system_uuid: string;
     id: string;
+    idAccount: string;
+    tradingAccountId: string;
     symbol: string;
     alias: string;
     volume: number;

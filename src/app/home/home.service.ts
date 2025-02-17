@@ -5,66 +5,62 @@ import { Position } from '../models/position';
 import { TokenService } from '../token.service';
 import { TradingAccount, User } from '../models/user';
 import { environment } from '../../../env.prod';
+import { Respon } from '../models/Respon';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class HomeService {
+  private options = {}
   private positionSubject = new BehaviorSubject<Position[]>([])
+  private tradingAccountsSubject = new BehaviorSubject<TradingAccount[]>([])
+  public tradingAccounts = this.tradingAccountsSubject.asObservable()
   public positions = this.positionSubject.asObservable()
-  private tradingAccounts: TradingAccount[] = []
   constructor(
     private http: HttpClient,
     private account: TokenService
   ) {
-    this.getAccounts()
-    this.setOpenedPosition()
+    this.options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': this.account.getToken(),
+      })
+    }
+    this.getTradingAccounts()
+  }
+
+  getTradingAccounts(): void {
+    this.http.get<Respon<TradingAccount>>(environment.apiUrl + '/accounts/all', this.options)
+    .subscribe({
+      next: accounts => {
+        this.tradingAccountsSubject.next(accounts.data)
+      },
+      error: error => alert(error.message)
+    })
   }
   
-  getAccounts(){
-    let user = JSON.parse(this.account.getUserFromStorage()) as User;
-    this.tradingAccounts = user.tradingAccounts
-  }
 
-  closePosition(position: Position){
-    let orderSide = position.side == 'BUY' ? 'SELL' : 'BUY';
-      let body = {
-          positionId: position.id,
-          instrument: position.symbol,
-          orderSide: orderSide,
-          volume: position.volume,
-        }
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
-    return this.http
-      .post<any>(
-        environment.apiUrl+`/trade/close-position?tradingApiToken=${position.tradingApiToken}&system_uuid=${position.system_uuid}`,
-        body,
-        { headers, withCredentials:true }
-      )
-  }
-
-  setOpenedPosition(){
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
+  getPositions(){
     let currentPosition: Position[] = [];
-    const positionRequests = this.tradingAccounts.map(account => {
-      let body = {
-        tradingApiToken: account.tradingApiToken,
-        system_uuid: account.offer.system.uuid
-      };
-
+    let tradeAccounts: {id:string, tradingAccountId:string}[] = [];
+    this.tradingAccountsSubject.getValue().forEach(accounts => {
+      accounts.tradingAccounts.forEach(trade => {
+        tradeAccounts.push({
+          id: accounts.id,
+          tradingAccountId: trade.tradingAccountId
+        })
+      })
+    });
+    const positionRequests = tradeAccounts.map(account => {
       return this.http
-        .post<Position[]>(environment.apiUrl+ '/trade/opened-position', body, { headers, withCredentials: true })
+        .get<Position[]>(`${environment.apiUrl}/trade/opened-position?tradingAccountId=${account.tradingAccountId}&id=${account.id}`, this.options)
         .pipe(
           map(positions => {
             return positions.map(position => ({
               ...position,
-              tradingApiToken: account.tradingApiToken,
-              system_uuid: account.offer.system.uuid
+              tradingAccountId: account.tradingAccountId,
+              idAccount: account.id
             }));
           })
         );
@@ -78,9 +74,6 @@ export class HomeService {
   }
 
   async editPosition(limitOrder: { slPrice: number, tpPrice: number}){
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
     const editRequest = this.positionSubject.getValue().map( position => {
       let body = {
         instrument: position.symbol,
@@ -92,11 +85,43 @@ export class HomeService {
         isMobile: false
       }
       return this.http
-       .post<any>(`${environment.apiUrl}/trade/edit?tradingApiToken=${position.tradingApiToken}&system_uuid=${position.system_uuid}`, body, { headers, withCredentials:true })
+       .post<any>(`${environment.apiUrl}/trade/edit?tradingAccountId=${position.tradingAccountId}&id=${position.idAccount}`, body, this.options)
     })
     try {
       await Promise.all(editRequest.map( req => lastValueFrom(req)))
-      this.setOpenedPosition()
+      this.getPositions()
+    } catch (error) {
+      
+    }
+  }
+
+  async closePosition(position: Position){
+    return this.http
+     .post<any>(`${environment.apiUrl}/trade/close?tradingAccountId=${position.tradingAccountId}&id=${position.idAccount}`, {
+        positionId: position.id,
+        instrument: position.symbol,
+        orderSide: position.side == "BUY" ? "SELL" : "BUY",
+        volume: position.volume
+     }, this.options)
+     .subscribe({
+       next: () => this.getPositions(),
+       error: error => console.error('Error while executing trade', error)
+     })
+  }
+
+  async flatten(){
+    let flatten = this.positionSubject.getValue().map(position => {
+      return this.http
+      .post<any>(`${environment.apiUrl}/trade/close?tradingAccountId=${position.tradingAccountId}&id=${position.idAccount}`, {
+         positionId: position.id,
+         instrument: position.symbol,
+         orderSide: position.side == "BUY" ? "SELL" : "BUY",
+         volume: position.volume
+      }, this.options)
+    })
+    try {
+      await Promise.all(flatten.map( req => lastValueFrom(req)))
+      this.getPositions()
     } catch (error) {
       
     }

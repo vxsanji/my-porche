@@ -11,8 +11,8 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
   account = new FormGroup({
-    email: new FormControl('akagami.ef@gmail.com', [Validators.required]),
-    password: new FormControl('#SlQYbG3', [Validators.required])
+    username: new FormControl('suga', [Validators.required]),
+    password: new FormControl('monkeydluffy', [Validators.required])
   })
 
   constructor(
@@ -21,7 +21,7 @@ export class LoginComponent {
   ){}
 
   onLogin = () => {
-    this.authService.login(this.account.value as {email:string, password:string})
+    this.authService.login(this.account.value as {username:string, password:string})
     .subscribe({
       next: res => {
         this.router.navigate(['/trade']);
