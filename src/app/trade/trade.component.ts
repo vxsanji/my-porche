@@ -3,13 +3,13 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { TradeService } from './trade.service';
 import { Trade } from '../models/trade'
 import { HomeService } from '../home/home.service';
-import { Position } from '../models/position';
 import { MarketService } from '../market.service';
 import { TradingAccount } from '../models/user';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { TokenService } from '../token.service';
 import { environment } from '../../../env.prod';
 import { lastValueFrom } from 'rxjs';
+import { Market } from '../models/market';
 
 @Component({
   selector: 'app-trade',
@@ -18,10 +18,9 @@ import { lastValueFrom } from 'rxjs';
   templateUrl: './trade.component.html',
 })
 export class TradeComponent implements OnInit {
-  private positions: Position[] = []
   private options = {}
   private tradingAccounts: TradingAccount[] = []
-  marketPrice: number = 0;
+  market: Market[] = [];
   trade = new FormGroup({
     instrument: new FormControl('EURUSD.c', [Validators.required]),
     orderSide: new FormControl('', [Validators.required]),
@@ -35,7 +34,8 @@ export class TradeComponent implements OnInit {
     private http: HttpClient,
     private tradeService: TradeService,
     private homeService: HomeService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private marketService: MarketService
   ){
     this.options = {
       headers: new HttpHeaders({
@@ -43,13 +43,6 @@ export class TradeComponent implements OnInit {
         'Authorization': this.tokenService.getToken(),
       })
     }
-    // this.getMarket('EURUSD.c')
-    // this.trade.get("instrument")?.valueChanges.subscribe( instrument => {
-    //   if(instrument) this.getMarket(instrument)
-    // })
-    // this.homeService.positions.subscribe( p => {
-    //   this.positions = p;
-    // })
   }
   ngOnInit(): void {
     this.homeService.tradingAccounts
@@ -59,12 +52,25 @@ export class TradeComponent implements OnInit {
       },
       error: (error) => console.error('Error getting trading accounts:', error)
     })
+    setTimeout(() => {
+      this.getMarket('EURUSD.c')
+    }, 4000)
+    this.trade.get("instrument")?.valueChanges.subscribe( instrument => {
+      if(instrument) this.getMarket(instrument)
+    })
   }
-  // getMarket(instrument: string){
-  //   this.marketService.getMarket(instrument).subscribe({
-  //     error: (error) => console.error('Error getting market price:', error)
-  //   })
-  // }
+
+  refreshPrice() {
+    const instrument = this.trade.get('instrument')?.value
+    if(instrument) this.getMarket(instrument)
+  }
+
+  getMarket(instrument: string){
+    this.marketService.getMarket(instrument).subscribe({
+      next: (market) => this.market = market,
+      error: (error) => console.error('Error getting market price:', error)
+    })
+  }
 
   buy(){
     let payload = this.trade.value as Trade;

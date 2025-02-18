@@ -35,7 +35,7 @@ export class TrAccountComponent implements OnInit {
 
   setToggle(currentStatus:boolean): void {
     if(currentStatus){
-      this.http.post(environment.apiUrl + '/accounts/deactivate', {tradingAccountId: this.p.tradingAccountId, id: this.acc.id}, this.options)
+      this.http.get(environment.apiUrl + '/accounts/deactivate?tradingAccountId='+this.p.tradingAccountId+'&id='+this.acc.id, this.options)
       .subscribe({
         next: () => {
           this.p.isActive = !currentStatus 
