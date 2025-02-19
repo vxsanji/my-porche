@@ -9,10 +9,10 @@
                   <div class="flex flex-row gap-5 items-center">
                     <form class="flex flex-row gap-2" [formGroup]="limitOrder" (submit)="editPosition()">
                         <span class="text-gray-400">SL</span>
-                        <input formControlName="slPrice" class="w-full h-10 bg-gray-900 text-center" type="number" name="slPrice" id="slPrice" step="0.00001">
+                        <input formControlName="slPrice" class="w-full h-10 bg-gray-900 text-center rounded-lg" type="number" name="slPrice" id="slPrice" step="0.00001">
                         <span class="text-gray-400">TP</span>
-                        <input formControlName="tpPrice" class="w-full h-10 bg-gray-900 text-center" type="number" name="slPrice" id="slPrice" step="0.00001">
-                        <button type="submit" class="bg-gray-900 px-3 py-1">Update</button>
+                        <input formControlName="tpPrice" class="w-full h-10 bg-gray-900 text-center rounded-lg" type="number" name="slPrice" id="slPrice" step="0.00001">
+                        <button type="submit" class="bg-teal-600 px-3 py-1 rounded-lg hover:bg-teal-500">Update</button>
                     </form>
                     <div>
                         <!-- <button (click)="refresh()">Refresh</button> -->

@@ -2,10 +2,36 @@
   <form class="mb-5" [formGroup]="trade">
     <div class="flex gap-3 flex-col flex-1">
       <div class="flex justify-end">
-        <button (click)="refreshPrice()" class="bg-teal-700 font-extralight text-sm px-2 hover:bg-teal-800">refresh price</button>
+        <button (click)="refreshPrice()" class="bg-teal-600 font-extralight text-sm px-2 hover:bg-teal-500">refresh price</button>
+      </div>
+      <div>        
+        <ul class="grid w-full gap-2 md:grid-cols-2">
+            <li>
+                <input formControlName="orderSide" type="radio" id="orderSide-small" name="orderSide" value="SELL" class="hidden peer" required />
+                <label for="orderSide-small" class="inline-flex items-center justify-between w-full p-5 text-gray-300 bg-gray-700 border-2 border-gray-900 rounded-lg cursor-pointer peer-checked:border-teal-400 peer-checked:text-teal-400 ">                           
+                    <div class="block">
+                        <div class="w-full text-lg font-semibold">SELL</div>
+                    </div>
+                    <svg class="w-5 h-5 ms-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                    </svg>
+                </label>
+            </li>
+            <li>
+                <input formControlName="orderSide" type="radio" id="orderSide-big" name="orderSide" value="BUY" class="hidden peer">
+                <label for="orderSide-big" class="inline-flex items-center justify-between w-full p-5 text-gray-300 bg-gray-700 border-2 border-gray-900 rounded-lg cursor-pointer peer-checked:border-teal-400 peer-checked:text-teal-400 ">
+                    <div class="block">
+                        <div class="w-full text-lg font-semibold">BUY</div>
+                    </div>
+                    <svg class="w-5 h-5 ms-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                    </svg>
+                </label>
+            </li>
+        </ul>
       </div>
       <div class="flex">
-        <select formControlName="instrument" class="flex-1 bg-gray-800 py-3 text-center" name="pair" id="pair">
+        <select formControlName="instrument" class="flex-1 bg-gray-800 py-3 text-center rounded-lg" name="pair" id="pair">
           <option value="EURUSD.c">EURUSD</option>
           <option value="GBPUSD.c">GBPUSD</option>
           <option value="NSDQ.c">US100</option>
@@ -19,22 +45,29 @@
         }
       </div>
       <div class="">
-        <input formControlName="volume" class="w-full h-10 bg-gray-800 text-center" type="number" name="lot" id="lot" placeholder="1.00" step="0.01">
+        <input formControlName="volume" class="w-full h-10 bg-gray-800 text-center rounded-lg" type="number" name="lot" id="lot" placeholder="1.00" step="0.01">
       </div>
       <div>
-        <label for="slPrice">Stop Loss</label>
-        <input formControlName="slPrice" class="w-full h-10 bg-gray-800 text-center" type="number" name="slPrice" id="slPrice" step="0.00001">
+        <label class="text-gray-400" for="slPrice">Stop Loss</label>
+        <div class="flex flex-row gap-1">
+          <input formControlName="slPrice" class="w-1/2 h-10 bg-gray-800 text-center rounded-lg" type="number" name="slPrice" id="slPrice" step="0.00001">
+          <input [(value)]="slPoint" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="slPrice" id="slPrice" step="1" disabled>
+          <input [(value)]="loss" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="loss" id="loss" step="5" disabled>
+        </div>
       </div>
       <div>
-        <label for="tpPrice">Take Profit</label>
-        <input formControlName="tpPrice" class="w-full h-10 bg-gray-800 text-center"  type="number" name="tpPrice" id="tpPrice" step="0.00001">
+        <label class="text-gray-400" for="slPrice">Take Profit</label>
+        <div class="flex flex-row gap-1">
+          <input formControlName="tpPrice" class="w-1/2 h-10 bg-gray-800 text-center rounded-lg" type="number" name="tpPrice" id="tpPrice" step="0.00001">
+          <input [(value)]="tpPoint" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="tpPrice" id="tpPrice" step="1" disabled>
+          <input [(value)]="profit" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="profit" id="profit" step="5" disabled>
+        </div>
       </div>
       <div class="flex gap-2 justify-between">
-        <button (click)="sell()" class="bg-teal-600 flex-1 py-3">SELL</button>
-        <button (click)="buy()" class="bg-teal-600 flex-1 py-3">BUY</button>
+        <button (click)="excuteTrade()" class="bg-teal-600 flex-1 py-3 rounded-lg disabled:bg-teal-800" [disabled]="trade.get('orderSide')?.value ? false : true">SUBMIT</button>
       </div>
       <div class="flex">
-        <button (click)="flatten()" class="bg-black flex-1 py-3">FLATTEN</button>
+        <button (click)="flatten()" class="bg-black flex-1 py-3 rounded-lg">FLATTEN</button>
       </div>
     </div>
   </form>

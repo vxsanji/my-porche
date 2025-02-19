@@ -18,9 +18,13 @@ import { Market } from '../models/market';
   templateUrl: './trade.component.html',
 })
 export class TradeComponent implements OnInit {
-  private options = {}
-  private tradingAccounts: TradingAccount[] = []
+  options = {}
   market: Market[] = [];
+  tradingAccounts: TradingAccount[] = [];
+  slPoint: number = 100
+  tpPoint: number = 200
+  profit: number = 150
+  loss: number = 75
   trade = new FormGroup({
     instrument: new FormControl('EURUSD.c', [Validators.required]),
     orderSide: new FormControl('', [Validators.required]),
@@ -32,10 +36,9 @@ export class TradeComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private tradeService: TradeService,
     private homeService: HomeService,
-    private tokenService: TokenService,
-    private marketService: MarketService
+    private marketService: MarketService,
+    private tokenService: TokenService
   ){
     this.options = {
       headers: new HttpHeaders({
@@ -45,45 +48,102 @@ export class TradeComponent implements OnInit {
     }
   }
   ngOnInit(): void {
-    this.homeService.tradingAccounts
-    .subscribe({
+    this.homeService.tradingAccounts.subscribe({
       next: (accounts) => {
-        this.tradingAccounts = accounts   
+        this.tradingAccounts = accounts
       },
-      error: (error) => console.error('Error getting trading accounts:', error)
+      error: (error) => console.error('Error fetching trading accounts:', error)
     })
-    setTimeout(() => {
-      this.getMarket('EURUSD.c')
-    }, 4000)
     this.trade.get("instrument")?.valueChanges.subscribe( instrument => {
-      if(instrument) this.getMarket(instrument)
+      if(instrument) this.marketService.getMarket(instrument).subscribe({
+        next: (market) => {
+          this.market = market
+        },
+        error: (error) => console.error('Error getting market price:', error)
+      })
     })
+    this.trade.get("orderSide")?.valueChanges.subscribe( side => {
+      let instrument = this.trade.get('instrument')?.value! 
+      this.marketService.getMarket(instrument).subscribe({
+        next: (market) => {
+          this.market = market
+          this.initiateTrade(side)
+        },
+        error: (error) => console.error('Error getting market price:', error)
+      })
+    })
+    this.trade.get('volume')?.valueChanges.subscribe(volume => {
+      if(volume){
+        this.loss = Math.round(volume * this.slPoint)
+        this.profit = Math.round(volume * this.tpPoint)
+      }
+    })
+    this.trade.get('slPrice')?.valueChanges.subscribe( slPrice => {
+      let side = this.trade.get('orderSide')?.value
+      let volume = this.trade.get('volume')?.value!
+      if(slPrice && side && volume){
+        if(side == 'BUY') {
+          let slP = Number(this.market[0].ask) - slPrice
+          this.slPoint = Math.round(slP * 100000)
+          this.loss = Math.round(volume * slP * 100000)
+        }else{
+          let slP = slPrice - Number(this.market[0].ask)
+          this.slPoint = Math.round(slP * 100000)
+          this.loss = Math.round(volume * slP * 100000)
+        }
+      }
+    })
+    this.trade.get('tpPrice')?.valueChanges.subscribe(tpPrice => {
+      let side = this.trade.get('orderSide')?.value
+      let volume = this.trade.get('volume')?.value!
+      if(tpPrice && side && volume){
+        if(side == 'BUY') {
+          let slP = tpPrice - Number(this.market[0].ask)
+          this.tpPoint = Math.round(slP * 100000)
+          this.profit = Math.round(volume * slP * 100000)
+        }else{
+          let slP = Number(this.market[0].ask) - tpPrice
+          this.tpPoint = Math.round(slP * 100000)
+          this.profit = Math.round(volume * slP * 100000)
+        }
+      }
+    })
+  }
+
+  initiateTrade(orderSide: string|null){
+    if(orderSide !== null){
+      let vol = (this.loss / this.slPoint).toFixed(2)
+      if(orderSide === "BUY"){
+        let slP = (Number(this.market[0].ask) - this.slPoint*0.00001).toFixed(6)
+        let tpP = (Number(this.market[0].ask) + this.tpPoint*0.00001).toFixed(6)
+        this.trade.patchValue({
+          slPrice: Number(slP),
+          tpPrice: Number(tpP),
+          volume: Number(vol)
+        })
+      }else{
+        let slP = (Number(this.market[0].ask) + this.slPoint*0.00001).toFixed(6)
+        let tpP = (Number(this.market[0].ask) - this.tpPoint*0.00001).toFixed(6)
+        this.trade.patchValue({
+          slPrice: Number(slP),
+          tpPrice: Number(tpP),
+          volume: Number(vol)
+        })
+      }
+    }
   }
 
   refreshPrice() {
     const instrument = this.trade.get('instrument')?.value
-    if(instrument) this.getMarket(instrument)
-  }
-
-  getMarket(instrument: string){
-    this.marketService.getMarket(instrument).subscribe({
-      next: (market) => this.market = market,
+    if(instrument) this.marketService.getMarket(instrument).subscribe({
+      next: (market) => {
+        this.market = market
+      },
       error: (error) => console.error('Error getting market price:', error)
     })
   }
 
-  buy(){
-    let payload = this.trade.value as Trade;
-    payload.orderSide = 'BUY';
-    this.excuteTrade(payload)
-  }
-  sell(){
-    let payload = this.trade.value as Trade;
-    payload.orderSide = 'SELL';
-    this.excuteTrade(payload)
-  }
-
-  private async excuteTrade(trade: Trade){
+  async excuteTrade(){
     const tradeAccounts: {id:string, tradingAccountId:string}[] = []
     this.tradingAccounts.forEach(acc => {
       acc.tradingAccounts.forEach(trade => {
@@ -96,7 +156,7 @@ export class TradeComponent implements OnInit {
 
     const tradeRequest = tradeAccounts.map( acc => {
       return this.http.post(
-        `${environment.apiUrl}/trade/open?tradingAccountId=${acc.tradingAccountId}&id=${acc.id}`, trade, this.options)
+        `${environment.apiUrl}/trade/open?tradingAccountId=${acc.tradingAccountId}&id=${acc.id}`, this.trade.value, this.options)
     })
     try {
       await Promise.all(tradeRequest.map( req => lastValueFrom(req)));

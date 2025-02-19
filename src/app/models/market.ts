@@ -1,8 +1,8 @@
 export interface Market {
     symbol: string,
     alias: string,
-    bid: string,
-    ask: string,
+    bid: number,
+    ask: number,
     change: string,
     high: string,
     low: string,
