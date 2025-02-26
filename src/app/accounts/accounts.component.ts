@@ -42,8 +42,13 @@ export class AccountsComponent implements OnInit {
     }
   }
   ngOnInit(): void {
-    this.getAccounts()
-    this.getTradingAccounts()
+    this.http.get<any>(environment.apiUrl + '/auth/refresh-match', this.options).subscribe({
+      next: () => {
+        this.getAccounts()
+        this.getTradingAccounts()
+      },
+      error: (error) => console.error('Error fetching trading accounts:', error)
+    })
   }
 
   getTradingAccounts(): void {

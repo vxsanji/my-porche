@@ -1,16 +1,16 @@
-<div class="text-gray-300 bg-gray-800 min-h-screen py-10">
-    <div class="flex flex-col w-1/4 mx-auto bg-gray-900 py-4 px-2 gap-5">
-        <form action="" [formGroup]="account" (submit)="onLogin()">
+<div class="text-gray-300 bg-gray-900 min-h-screen py-10">
+    <div class="flex flex-col w-1/4 mx-auto py-4 px-2 gap-5 rounded-lg">
+        <form class="flex flex-col gap-3" [formGroup]="account" (submit)="onLogin()">
             <div class="flex flex-col">
-                <label class="px-2 py-1" for="username">username</label>
-                <input class="p-3 bg-gray-800" formControlName="username" type="text" id="username" placeholder="username">
+                <label class="px-2 py-1" for="username">Username</label>
+                <input class="p-3 bg-gray-800 rounded-lg" formControlName="username" type="text" id="username" placeholder="username">
             </div>
             <div class="flex flex-col">
-                <label class="px-2 py-1" for="password">password</label>
-                <input class="p-3 bg-gray-800" formControlName="password" type="password" id="password" placeholder="password">
+                <label class="px-2 py-1" for="password">Password</label>
+                <input class="p-3 bg-gray-800 rounded-lg" formControlName="password" type="password" id="password" placeholder="password">
             </div>
             <div class="flex justify-center">
-                <button>LOGIN</button>
+                <button class="bg-teal-600 w-full px-3 py-2 rounded-lg">LOGIN</button>
             </div>
         </form>
     </div>

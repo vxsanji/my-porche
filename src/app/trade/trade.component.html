@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gray-900 px-3 py-5">
+<div class="min-h-screen bg-gray-950 px-3 py-5">
   <form class="mb-5" [formGroup]="trade">
     <div class="flex gap-3 flex-col flex-1">
       <div class="flex justify-end">
@@ -8,7 +8,7 @@
         <ul class="grid w-full gap-2 md:grid-cols-2">
             <li>
                 <input formControlName="orderSide" type="radio" id="orderSide-small" name="orderSide" value="SELL" class="hidden peer" required />
-                <label for="orderSide-small" class="inline-flex items-center justify-between w-full p-5 text-gray-300 bg-gray-700 border-2 border-gray-900 rounded-lg cursor-pointer peer-checked:border-teal-400 peer-checked:text-teal-400 ">                           
+                <label for="orderSide-small" class="inline-flex items-center justify-between w-full p-5 text-gray-300 bg-gray-900 border-2 border-gray-950 rounded-lg cursor-pointer peer-checked:border-teal-400 peer-checked:text-teal-400 ">                           
                     <div class="block">
                         <div class="w-full text-lg font-semibold">SELL</div>
                     </div>
@@ -19,7 +19,7 @@
             </li>
             <li>
                 <input formControlName="orderSide" type="radio" id="orderSide-big" name="orderSide" value="BUY" class="hidden peer">
-                <label for="orderSide-big" class="inline-flex items-center justify-between w-full p-5 text-gray-300 bg-gray-700 border-2 border-gray-900 rounded-lg cursor-pointer peer-checked:border-teal-400 peer-checked:text-teal-400 ">
+                <label for="orderSide-big" class="inline-flex items-center justify-between w-full p-5 text-gray-300 bg-gray-900 border-2 border-gray-950 rounded-lg cursor-pointer peer-checked:border-teal-400 peer-checked:text-teal-400 ">
                     <div class="block">
                         <div class="w-full text-lg font-semibold">BUY</div>
                     </div>
@@ -67,7 +67,7 @@
         <button (click)="excuteTrade()" class="bg-teal-600 flex-1 py-3 rounded-lg disabled:bg-teal-800" [disabled]="trade.get('orderSide')?.value ? false : true">SUBMIT</button>
       </div>
       <div class="flex">
-        <button (click)="flatten()" class="bg-black flex-1 py-3 rounded-lg">FLATTEN</button>
+        <button (click)="flatten()" class="bg-black flex-1 py-3 rounded-lg border-2 border-teal-700">FLATTEN</button>
       </div>
     </div>
   </form>
