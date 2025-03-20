@@ -2,7 +2,7 @@
   <form class="mb-5" [formGroup]="trade">
     <div class="flex gap-3 flex-col flex-1">
       <div class="flex justify-end">
-        <button (click)="refreshPrice()" class="bg-teal-600 font-extralight text-sm px-2 hover:bg-teal-500">refresh price</button>
+        <button (click)="refreshPrice()" class="text-teal-600 font-extralight text-sm px-2 hover:text-teal-500">refresh price</button>
       </div>
       <div>        
         <ul class="grid w-full gap-2 md:grid-cols-2">
@@ -48,18 +48,18 @@
         <input formControlName="volume" class="w-full h-10 bg-gray-800 text-center rounded-lg" type="number" name="lot" id="lot" placeholder="1.00" step="0.01">
       </div>
       <div>
-        <label class="text-gray-400" for="slPrice">Stop Loss</label>
+        <label class="text-gray-400" for="sl">Stop Loss</label>
         <div class="flex flex-row gap-1">
-          <input formControlName="slPrice" class="w-1/2 h-10 bg-gray-800 text-center rounded-lg" type="number" name="slPrice" id="slPrice" step="0.00001">
-          <input [(value)]="slPoint" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="slPrice" id="slPrice" step="1" disabled>
+          <input formControlName="slPrice" class="w-1/2 h-10 bg-gray-800 text-center rounded-lg" type="number" name="slPrice" id="sl" step="0.00001">
+          <input [(value)]="slPoint" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="slPrice" step="1" disabled>
           <input [(value)]="loss" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="loss" id="loss" step="5" disabled>
         </div>
       </div>
       <div>
-        <label class="text-gray-400" for="slPrice">Take Profit</label>
+        <label class="text-gray-400" for="tp">Take Profit</label>
         <div class="flex flex-row gap-1">
-          <input formControlName="tpPrice" class="w-1/2 h-10 bg-gray-800 text-center rounded-lg" type="number" name="tpPrice" id="tpPrice" step="0.00001">
-          <input [(value)]="tpPoint" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="tpPrice" id="tpPrice" step="1" disabled>
+          <input formControlName="tpPrice" class="w-1/2 h-10 bg-gray-800 text-center rounded-lg" type="number" name="tpPrice" id="tp" step="0.00001">
+          <input [(value)]="tpPoint" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="tpPrice" step="1" disabled>
           <input [(value)]="profit" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="profit" id="profit" step="5" disabled>
         </div>
       </div>

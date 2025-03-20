@@ -1,139 +1,140 @@
-<div class="text-white bg-gray-950 min-h-screen">
-    <div class="flex flex-row">
-        <div class="p-5 w-3/4">
-            <div class="mb-5">
-              <div class="flex justify-between items-center p-2">
-                  <div>
-                      <h2 class="px-2">Position</h2>
-                  </div>
-                  <div class="flex flex-row gap-5 items-center">
-                    <form class="flex flex-row gap-2" [formGroup]="limitOrder" (submit)="editPosition()">
-                        <span class="text-gray-400">SL</span>
-                        <input formControlName="slPrice" class="w-full h-10 bg-gray-900 text-center rounded-lg" type="number" name="slPrice" id="slPrice" step="0.00001">
-                        <span class="text-gray-400">TP</span>
-                        <input formControlName="tpPrice" class="w-full h-10 bg-gray-900 text-center rounded-lg" type="number" name="slPrice" id="slPrice" step="0.00001">
-                        <button type="submit" class="bg-teal-600 px-3 py-1 rounded-lg hover:bg-teal-500">Update</button>
-                    </form>
+<div class="flex justify-center bg-gray-950">
+    <div class="lg:max-w-screen-2xl text-white min-h-screen">
+        <div class="flex flex-row">
+            <div class="p-5 w-3/4">
+                <div class="mb-5">
+                <div class="flex justify-between items-center p-2">
                     <div>
+                        <h2 class="px-2">Position</h2>
                     </div>
-                  </div>
-              </div>
-              <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-400 uppercase bg-gray-700">
-                        <tr>
-                            <th scope="col" class="px-6 py-3">
-                                Account
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Pair
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Open
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Volume
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                S/L
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                T/P
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                P/L
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                      @for (p of positions; track $index) {
-                          <tr>
-                            <th scope="row" class="px-6 py-4 font-medium {{p.side == 'BUY' ? 'text-green-600' : 'text-red-600'}} whitespace-nowrap">
-                                {{p.id}} {{p.tradingAccountId}} <br>
-                                <span class="text-white font-light">
-                                    {{p.openTime}}
-                                </span>
-                            </th>
-                            <td class="px-6 py-4">
-                                {{p.symbol}}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{p.openPrice}}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{p.volume}}
-                            </td>
-                            <td class="px-6 py-4">
-                                {{p.stopLoss}} <br>
-                                <!-- {{stopLossUSD(p.openPrice, p.stopLoss, p.volume)}} -->
-                            </td>
-                            <td class="px-6 py-4">
-                                {{p.takeProfit}} <br>
-                                <!-- {{takeProfitUSD(p.openPrice, p.takeProfit, p.volume)}} -->
-                            </td>
-                            <td class="px-6 py-4">
-                                {{p.netProfit}}
-                            </td>
-                            <td class="flex gap-1 justify-end px-6 py-4">
-                                <a (click)="close(p)" class="font-medium text-red-600 bg-slate-900 px-3 py-1 hover:text-red-500 hover:cursor-pointer">50%</a>
-                                <a (click)="close(p)" class="font-medium text-red-600 bg-slate-900 px-3 py-1 hover:text-red-500 hover:cursor-pointer">75%</a>
-                                <a (click)="close(p)" class="font-medium text-red-600 bg-slate-900 px-3 py-1 hover:text-red-500 hover:cursor-pointer">100%</a>
-                            </td>
-                        </tr>
-                      }
-                    </tbody>
-                </table>
-              </div>
-            </div>
-            <div>
-              <div class="flex justify-between items-center p-2">
-                  <div>
-                      <h3 class="px-2">Accounts</h3>
-                  </div>
-                  <div>
-                      <a class="text-teal-600" href="/accounts">Account details here!</a>
-                  </div>
-              </div>
-              <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs uppercase bg-gray-700 text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-6 py-3">
-                                Account
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Balance
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Equity
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Vol x
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Net Profit
-                            </th>
-                            <th scope="col" class="px-6 py-3">
-                                Profit
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (acc of accounts; track $index) {
-                            @for (p of acc.tradingAccounts; track $index) {
-                                <tr account [acc]="acc" [p]="p"></tr>
-                            }
+                    <div class="flex flex-row gap-5 items-center">
+                        <form class="flex flex-row gap-2" [formGroup]="limitOrder" (submit)="editPosition()">
+                            <span class="text-gray-400">SL</span>
+                            <input formControlName="slPrice" class="w-full h-10 bg-gray-900 text-center rounded-lg" type="number" name="slPrice" id="slPrice" step="0.00001">
+                            <span class="text-gray-400">TP</span>
+                            <input formControlName="tpPrice" class="w-full h-10 bg-gray-900 text-center rounded-lg" type="number" name="slPrice" id="slPrice" step="0.00001">
+                            <button type="submit" class="bg-teal-600 px-3 py-1 rounded-lg hover:bg-teal-500">Update</button>
+                        </form>
+                        <div>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-400 uppercase bg-gray-700">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">
+                                    Account
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Pair
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Open
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Volume
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    S/L
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    T/P
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    P/L
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @for (p of positions; track $index) {
+                            <tr>
+                                <th scope="row" class="px-6 py-4 font-medium {{p.side == 'BUY' ? 'text-green-600' : 'text-red-600'}} whitespace-nowrap">
+                                    {{p.id}} {{p.tradingAccountId}} <br>
+                                    <span class="text-white font-light">
+                                        {{p.openTime}}
+                                    </span>
+                                </th>
+                                <td class="px-6 py-4">
+                                    {{p.symbol}}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{p.openPrice}}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{p.volume}}
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{p.stopLoss}} <br>
+                                    <!-- {{stopLossUSD(p.openPrice, p.stopLoss, p.volume)}} -->
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{p.takeProfit}} <br>
+                                    <!-- {{takeProfitUSD(p.openPrice, p.takeProfit, p.volume)}} -->
+                                </td>
+                                <td class="px-6 py-4">
+                                    {{p.netProfit}}
+                                </td>
+                                <td class="flex gap-1 justify-end px-6 py-4">
+                                    <a (click)="close(p)" class="font-medium text-red-600 bg-slate-900 px-3 py-1 hover:text-red-500 hover:cursor-pointer">50%</a>
+                                    <a (click)="close(p)" class="font-medium text-red-600 bg-slate-900 px-3 py-1 hover:text-red-500 hover:cursor-pointer">75%</a>
+                                    <a (click)="close(p)" class="font-medium text-red-600 bg-slate-900 px-3 py-1 hover:text-red-500 hover:cursor-pointer">100%</a>
+                                </td>
+                            </tr>
                         }
-                    </tbody>
-                </table>
-              </div>
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+                <div>
+                <div class="flex justify-between items-center p-2">
+                    <div>
+                        <h3 class="px-2">Accounts</h3>
+                    </div>
+                    <div>
+                        <a class="text-teal-600" href="/accounts">Account details here!</a>
+                    </div>
+                </div>
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs uppercase bg-gray-700 text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">
+                                    Account
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Balance
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Equity
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Vol x
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Net Profit
+                                </th>
+                                <th scope="col" class="px-6 py-3">
+                                    Profit
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (acc of accounts; track $index) {
+                                @for (p of acc.tradingAccounts; track $index) {
+                                    <tr account [acc]="acc" [p]="p"></tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                </div>
             </div>
-        </div>
-        <div class="w-1/4">
-            <app-trade></app-trade>
+            <div class="w-1/4">
+                <app-trade></app-trade>
+            </div>
         </div>
     </div>
 </div>
-
