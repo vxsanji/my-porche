@@ -12,13 +12,13 @@
         {{balance.volume}}x
     }
 </td>
-<td class="px-6 py-4">
-    {{balance.netProfit}}
-</td>
-<td class="px-6 py-4">
-    {{balance.profit}}
-</td>
 @if (p.isActive !== null) {
+    <td class="px-6 py-4">
+        {{balance.netProfit}}
+    </td>
+    <td class="px-6 py-4">
+        {{balance.profit}}
+    </td>
     <td class="px-6 py-4">
         <label class="inline-flex items-center me-5 cursor-pointer">
             <input type="checkbox" value="" class="sr-only peer" [checked]="p.isActive" (change)="setToggle(p.isActive)">
@@ -28,4 +28,6 @@
     <td class="px-6 py-4">
         <button class="bg-black px-2 py-1 text-gray-400" (click)="block(p.tradingAccountId)">BLOCK</button>
     </td>
+}@else {
+    
 }
