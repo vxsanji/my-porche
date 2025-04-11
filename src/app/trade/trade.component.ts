@@ -11,6 +11,7 @@ import { environment } from '../../../env.prod';
 import { lastValueFrom } from 'rxjs';
 import { Market } from '../models/market';
 
+
 @Component({
   selector: 'app-trade',
   standalone: true,
@@ -33,6 +34,82 @@ export class TradeComponent implements OnInit {
     tpPrice: new FormControl(0, [Validators.required]),
     isMobile: new FormControl(false, [Validators.required]),
   })
+  selectedPair: {
+    name: string,
+    symbol: string,
+    step: string
+  } = {
+    name: '',
+    symbol: '',
+    step: ''
+  }
+
+  pairList: {
+    name: string,
+    symbol: string,
+    step: string
+  }[] = [
+    {
+      name: 'EURUSD',
+      symbol: 'EURUSD.c',
+      step: "0.00001"
+    },
+    {
+      name: 'GBPUSD',
+      symbol: 'GBPUSD.c',
+      step: "0.00001"
+    },
+    {
+      name: 'USDJPY',
+      symbol: 'USDJPY.c',
+      step: "0.001"
+    },
+    {
+      name: 'AUDUSD',
+      symbol: 'AUDUSD.c',
+      step: "0.00001"
+    },
+    {
+      name: 'NZDUSD',
+      symbol: 'NZDUSD.c',
+      step: "0.00001"
+    },
+    {
+      name: 'USDCAD',
+      symbol: 'USDCAD.c',
+      step: "0.00001"
+    },
+    {
+      name: 'USDCHF',
+      symbol: 'USDCHF.c',
+      step: "0.00001"
+    },
+    {
+      name: 'EURJPY',
+      symbol: 'EURJPY.c',
+      step: "0.001"
+    },
+    {
+      name: 'GBPJPY',
+      symbol: 'GBPJPY.c',
+      step: "0.001"
+    },
+    {
+      name: 'AUDJPY',
+      symbol: 'AUDJPY.c',
+      step: "0.001"
+    },
+    {
+      name: 'US100',
+      symbol: 'NSDQ.c',
+      step: "1"
+    },
+    {
+      name: 'US500',
+      symbol: 'SP.c',
+      step: "1"
+    }
+  ]
 
   constructor(
     private http: HttpClient,
@@ -46,6 +123,7 @@ export class TradeComponent implements OnInit {
         'Authorization': this.tokenService.getToken(),
       })
     }
+    this.selectedPair = this.pairList[0]
   }
   ngOnInit(): void {
     this.homeService.tradingAccounts.subscribe({
@@ -110,6 +188,19 @@ export class TradeComponent implements OnInit {
     })
   }
 
+  onPairChange(event: Event){
+    const selectedPair = (event.target as HTMLSelectElement).value;
+    this.selectedPair = this.pairList.find(pair => pair.symbol === selectedPair) || this.pairList[0];
+    let instrument = this.trade.get('instrument')?.value! 
+    this.marketService.getMarket(instrument).subscribe({
+      next: (market) => {
+        this.market = market
+        this.initiateTrade(this.trade.get('orderSide')!.value)
+      },
+      error: (error) => console.error('Error getting market price:', error)
+    })
+  }
+
   initiateTrade(orderSide: string|null){
     if(orderSide !== null){
       let vol = (this.loss / this.slPoint).toFixed(2)
@@ -138,6 +229,7 @@ export class TradeComponent implements OnInit {
     if(instrument) this.marketService.getMarket(instrument).subscribe({
       next: (market) => {
         this.market = market
+        this.initiateTrade(this.trade.get('orderSide')!.value)
       },
       error: (error) => console.error('Error getting market price:', error)
     })

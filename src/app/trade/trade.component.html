@@ -2,7 +2,7 @@
   <form class="mb-5" [formGroup]="trade">
     <div class="flex gap-3 flex-col flex-1">
       <div class="flex justify-end">
-        <button (click)="refreshPrice()" class="text-teal-600 font-extralight text-sm px-2 hover:text-teal-500">refresh price</button>
+        <button (click)="refreshPrice()" class="bg-teal-600 text-white rounded-md font-extralight text-sm px-2 hover:bg-teal-500">refresh price</button>
       </div>
       <div>        
         <ul class="grid w-full gap-2 md:grid-cols-2">
@@ -12,7 +12,7 @@
                     <div class="block">
                         <div class="w-full text-lg font-semibold">SELL</div>
                     </div>
-                    <svg class="w-5 h-5 ms-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <svg class="w-5 h-5 ms-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10" transform="rotate(90)">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
                     </svg>
                 </label>
@@ -23,7 +23,7 @@
                     <div class="block">
                         <div class="w-full text-lg font-semibold">BUY</div>
                     </div>
-                    <svg class="w-5 h-5 ms-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <svg class="w-5 h-5 ms-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10" transform="rotate(-90)">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
                     </svg>
                 </label>
@@ -31,16 +31,10 @@
         </ul>
       </div>
       <div class="flex">
-        <select formControlName="instrument" class="flex-1 bg-gray-800 py-3 text-center rounded-lg" name="pair" id="pair">
-          <option value="EURUSD.c">EURUSD</option>
-          <option value="GBPUSD.c">GBPUSD</option>
-          <option value="AUDUSD.c">AUDUSD</option>
-          <option value="USDJPY.c">USDJPY</option>
-          <option value="EURJPY.c">EURJPY</option>
-          <option value="USDCAD.c">USDCAD</option>
-          <option value="USDCHF.c">USDCHF</option>
-          <option value="NSDQ.c">US100</option>
-          <option value="SP.c">US500</option>
+        <select formControlName="instrument" class="flex-1 bg-gray-800 py-3 text-center rounded-lg" name="pair" id="pair" (change)="onPairChange($event)">
+          @for(pair of pairList; track pair.symbol){
+            <option value="{{pair.symbol}}">{{pair.name}}</option>
+          }
         </select>
       </div>
       <div class="flex flex-row justify-between">
@@ -55,7 +49,7 @@
       <div>
         <label class="text-gray-400" for="sl">Stop Loss</label>
         <div class="flex flex-row gap-1">
-          <input formControlName="slPrice" class="w-1/2 h-10 bg-gray-800 text-center rounded-lg" type="number" name="slPrice" id="sl" step="0.00001">
+          <input formControlName="slPrice" class="w-1/2 h-10 bg-gray-800 text-center rounded-lg" type="number" name="slPrice" id="sl" step={{selectedPair.step}}>
           <input [(value)]="slPoint" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="slPrice" step="1" disabled>
           <input [(value)]="loss" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="loss" id="loss" step="5" disabled>
         </div>
@@ -63,7 +57,7 @@
       <div>
         <label class="text-gray-400" for="tp">Take Profit</label>
         <div class="flex flex-row gap-1">
-          <input formControlName="tpPrice" class="w-1/2 h-10 bg-gray-800 text-center rounded-lg" type="number" name="tpPrice" id="tp" step="0.00001">
+          <input formControlName="tpPrice" class="w-1/2 h-10 bg-gray-800 text-center rounded-lg" type="number" name="tpPrice" id="tp" step={{selectedPair.step}}>
           <input [(value)]="tpPoint" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="tpPrice" step="1" disabled>
           <input [(value)]="profit" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="profit" id="profit" step="5" disabled>
         </div>
