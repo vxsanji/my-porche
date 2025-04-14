@@ -108,7 +108,22 @@ export class TradeComponent implements OnInit {
       name: 'US500',
       symbol: 'SP.c',
       step: "1"
-    }
+    },
+    {
+      name: 'XAUUSD',
+      symbol: 'XAUUSD.c',
+      step: "0.01"
+    },
+    {
+      name: 'XAGUSD',
+      symbol: 'XAGUSD.c',
+      step: "0.01"
+    },
+    {
+      name: 'BTCUSD',
+      symbol: 'BTCUSD.c',
+      step: "0.00001"
+    },
   ]
 
   constructor(
