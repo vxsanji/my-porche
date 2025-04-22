@@ -11,6 +11,87 @@ import { environment } from '../../../env.prod';
 import { lastValueFrom } from 'rxjs';
 import { Market } from '../models/market';
 
+export const pairList: {
+  name: string,
+  symbol: string,
+  step: string
+}[] = [
+  {
+    name: 'EURUSD',
+    symbol: 'EURUSD.c',
+    step: "0.00001"
+  },
+  {
+    name: 'GBPUSD',
+    symbol: 'GBPUSD.c',
+    step: "0.00001"
+  },
+  {
+    name: 'USDJPY',
+    symbol: 'USDJPY.c',
+    step: "0.001"
+  },
+  {
+    name: 'AUDUSD',
+    symbol: 'AUDUSD.c',
+    step: "0.00001"
+  },
+  {
+    name: 'NZDUSD',
+    symbol: 'NZDUSD.c',
+    step: "0.00001"
+  },
+  {
+    name: 'USDCAD',
+    symbol: 'USDCAD.c',
+    step: "0.00001"
+  },
+  {
+    name: 'USDCHF',
+    symbol: 'USDCHF.c',
+    step: "0.00001"
+  },
+  {
+    name: 'EURJPY',
+    symbol: 'EURJPY.c',
+    step: "0.001"
+  },
+  {
+    name: 'GBPJPY',
+    symbol: 'GBPJPY.c',
+    step: "0.001"
+  },
+  {
+    name: 'AUDJPY',
+    symbol: 'AUDJPY.c',
+    step: "0.001"
+  },
+  {
+    name: 'US100',
+    symbol: 'NSDQ.c',
+    step: "1"
+  },
+  {
+    name: 'US500',
+    symbol: 'SP.c',
+    step: "1"
+  },
+  {
+    name: 'XAUUSD',
+    symbol: 'XAUUSD.c',
+    step: "0.01"
+  },
+  {
+    name: 'XAGUSD',
+    symbol: 'XAGUSD.c',
+    step: "0.01"
+  },
+  {
+    name: 'BTCUSD',
+    symbol: 'BTCUSD.c',
+    step: "0.00001"
+  },
+]
 
 @Component({
   selector: 'app-trade',
@@ -44,88 +125,6 @@ export class TradeComponent implements OnInit {
     step: ''
   }
 
-  pairList: {
-    name: string,
-    symbol: string,
-    step: string
-  }[] = [
-    {
-      name: 'EURUSD',
-      symbol: 'EURUSD.c',
-      step: "0.00001"
-    },
-    {
-      name: 'GBPUSD',
-      symbol: 'GBPUSD.c',
-      step: "0.00001"
-    },
-    {
-      name: 'USDJPY',
-      symbol: 'USDJPY.c',
-      step: "0.001"
-    },
-    {
-      name: 'AUDUSD',
-      symbol: 'AUDUSD.c',
-      step: "0.00001"
-    },
-    {
-      name: 'NZDUSD',
-      symbol: 'NZDUSD.c',
-      step: "0.00001"
-    },
-    {
-      name: 'USDCAD',
-      symbol: 'USDCAD.c',
-      step: "0.00001"
-    },
-    {
-      name: 'USDCHF',
-      symbol: 'USDCHF.c',
-      step: "0.00001"
-    },
-    {
-      name: 'EURJPY',
-      symbol: 'EURJPY.c',
-      step: "0.001"
-    },
-    {
-      name: 'GBPJPY',
-      symbol: 'GBPJPY.c',
-      step: "0.001"
-    },
-    {
-      name: 'AUDJPY',
-      symbol: 'AUDJPY.c',
-      step: "0.001"
-    },
-    {
-      name: 'US100',
-      symbol: 'NSDQ.c',
-      step: "1"
-    },
-    {
-      name: 'US500',
-      symbol: 'SP.c',
-      step: "1"
-    },
-    {
-      name: 'XAUUSD',
-      symbol: 'XAUUSD.c',
-      step: "0.01"
-    },
-    {
-      name: 'XAGUSD',
-      symbol: 'XAGUSD.c',
-      step: "0.01"
-    },
-    {
-      name: 'BTCUSD',
-      symbol: 'BTCUSD.c',
-      step: "0.00001"
-    },
-  ]
-
   constructor(
     private http: HttpClient,
     private homeService: HomeService,
@@ -138,7 +137,7 @@ export class TradeComponent implements OnInit {
         'Authorization': this.tokenService.getToken(),
       })
     }
-    this.selectedPair = this.pairList[0]
+    this.selectedPair = pairList[0]
   }
   ngOnInit(): void {
     this.homeService.tradingAccounts.subscribe({
@@ -205,7 +204,7 @@ export class TradeComponent implements OnInit {
 
   onPairChange(event: Event){
     const selectedPair = (event.target as HTMLSelectElement).value;
-    this.selectedPair = this.pairList.find(pair => pair.symbol === selectedPair) || this.pairList[0];
+    this.selectedPair = pairList.find(pair => pair.symbol === selectedPair) || pairList[0];
     let instrument = this.trade.get('instrument')?.value! 
     this.marketService.getMarket(instrument).subscribe({
       next: (market) => {

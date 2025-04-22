@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TradeComponent } from '../trade/trade.component';
+import { pairList, TradeComponent } from '../trade/trade.component';
 import { Position } from '../models/position';
 import { HomeService } from './home.service';
 import { TradingAccount } from '../models/user';
@@ -13,6 +13,7 @@ import { TrAccountComponent } from './tr-account/tr-account.component';
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit {
+  pairs = pairList
   positions : Position[] = []
   accounts : TradingAccount[] = []
   limitOrder = new FormGroup({
@@ -42,8 +43,8 @@ export class HomeComponent implements OnInit {
       }})
   }
 
-  private getPositions(){
-    this.homeService.getPositions()
+  private getPositions(filter: string | null = null){
+    this.homeService.getPositions(filter)
   }
 
   editPosition(){
@@ -53,6 +54,12 @@ export class HomeComponent implements OnInit {
 
   close(position: Position){
     this.homeService.closePosition(position)
+  }
+
+  onPairChange(event: Event){
+    const selectedPair = (event.target as HTMLSelectElement).value;
+    if(selectedPair == '') this.getPositions()
+    else this.getPositions(selectedPair)
   }
 
   // stopLossUSD(openPrice: number, stopLoss: number, volume: number): string{

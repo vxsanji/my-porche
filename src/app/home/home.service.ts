@@ -41,7 +41,7 @@ export class HomeService {
   }
   
 
-  getPositions(){
+  getPositions(filter: string | null = null){
     let currentPosition: Position[] = [];
     let tradeAccounts: {id:string, tradingAccountId:string}[] = [];
     this.tradingAccountsSubject.getValue().forEach(accounts => {
@@ -68,6 +68,9 @@ export class HomeService {
 
     forkJoin(positionRequests).subscribe(allPositions => {
       currentPosition = allPositions.flat();
+      if(filter){
+        currentPosition = currentPosition.filter(position => position.symbol === filter)
+      }
       this.positionSubject.next(currentPosition);
     });
     
