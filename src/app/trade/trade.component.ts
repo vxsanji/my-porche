@@ -100,6 +100,7 @@ export const pairList: {
   templateUrl: './trade.component.html',
 })
 export class TradeComponent implements OnInit {
+  pairList = pairList
   options = {}
   market: Market[] = [];
   tradingAccounts: TradingAccount[] = [];
