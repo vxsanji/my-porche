@@ -49,17 +49,17 @@
       <div>
         <label class="text-gray-400" for="sl">Stop Loss</label>
         <div class="flex flex-row gap-1">
-          <input formControlName="slPrice" class="w-1/2 h-10 bg-gray-800 text-center rounded-lg" type="number" name="slPrice" id="sl" step={{selectedPair.step}}>
-          <input [(value)]="slPoint" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="slPrice" step="1" disabled>
-          <input [(value)]="loss" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="loss" id="loss" step="5" disabled>
+          <input formControlName="slPrice" class="w-3/4 h-10 bg-gray-800 text-center rounded-lg" type="number" name="slPrice" id="sl" step={{selectedPair.step}}>
+          <!-- <input [(value)]="slPoint" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="slPrice" step="1" disabled> -->
+          <input [(value)]="loss" class="w-1/3 h-10 bg-gray-900 text-center rounded-lg text-gray-500" type="number" name="loss" id="loss" step="5" disabled>
         </div>
       </div>
       <div>
         <label class="text-gray-400" for="tp">Take Profit</label>
         <div class="flex flex-row gap-1">
-          <input formControlName="tpPrice" class="w-1/2 h-10 bg-gray-800 text-center rounded-lg" type="number" name="tpPrice" id="tp" step={{selectedPair.step}}>
-          <input [(value)]="tpPoint" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="tpPrice" step="1" disabled>
-          <input [(value)]="profit" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="profit" id="profit" step="5" disabled>
+          <input formControlName="tpPrice" class="w-3/4 h-10 bg-gray-800 text-center rounded-lg" type="number" name="tpPrice" id="tp" step={{selectedPair.step}}>
+          <!-- <input [(value)]="tpPoint" class="w-1/4 h-10 bg-gray-800 text-center rounded-lg text-gray-500" type="number" name="tpPrice" step="1" disabled> -->
+          <input [(value)]="profit" class="w-1/3 h-10 bg-gray-900 text-center rounded-lg text-gray-500" type="number" name="profit" id="profit" step="5" disabled>
         </div>
       </div>
       <div class="flex gap-2 justify-between">
